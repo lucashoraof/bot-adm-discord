@@ -1,7 +1,8 @@
 {
-  "name": "ticket-store",
+  "name": "bot-adm-discord",
+  "author": "@lucashoraof",
+  "description": "Service and management system",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -9,7 +10,6 @@
     "pm2": "pm2 start index.js --watch --name=\"ticket-bot\"",
     "deploy": "node src/deploy-commands.js"
   },
-  "author": "Pinguim",
   "license": "ISC",
   "dependencies": {
     "discord.js": "13.16.0",
