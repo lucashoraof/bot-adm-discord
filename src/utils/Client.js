@@ -45,7 +45,7 @@ class CustomClient extends Client {
 
       // Login
       await this.login(process.env.TOKEN);
-      console.log('🍃 Bot iniciado com sucesso!');
+      console.log('🤖 Sistema da Code Lab iniciado com sucesso!');
     } catch (error) {
       console.error('Erro ao inicializar:', error);
     }
