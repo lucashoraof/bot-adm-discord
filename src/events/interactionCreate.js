@@ -132,7 +132,7 @@ module.exports = {
 
             // Confirmar ao usuário
             await interaction.reply({
-              content: `✅ Seu ticket foi criado em ${channel}`,
+              content: `**Muito bem!** Seu ticket foi criado com sucesso em ${channel}`,
               ephemeral: true
             });
 
@@ -154,7 +154,7 @@ module.exports = {
             // Verificar se já está verificado
             if (interaction.member.roles.cache.has('746898390817964102')) {
               return interaction.reply({
-                content: '❌ Você já está verificado!',
+                content: '**Ops!** Você já está verificado, não precisa fazer isso de novo!',
                 ephemeral: true
               });
             }
@@ -168,7 +168,7 @@ module.exports = {
 
             // Redirecionar diretamente para a autorização
             await interaction.reply({
-              content: 'Você está quase lá...',
+              content: 'Você está indo bem ;)',
               ephemeral: true,
               components: [
                 new Discord.MessageActionRow()
