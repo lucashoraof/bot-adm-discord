@@ -18,16 +18,14 @@ module.exports = {
     const row = new Discord.MessageActionRow()
       .addComponents(
         new Discord.MessageButton()
-          .setCustomId('verificar')
-          .setLabel('Verificar-se')
-          .setStyle('PRIMARY')
-          .setEmoji('✅')
+          .setCustomId('iniciar_verificacao')
+          .setLabel('Iniciar Verificação Segura')
+          .setStyle('SUCCESS')
       );
 
     // Enviar o botão
     try {
       await interaction.channel.send({
-        content: '',
         components: [row]
       });
 

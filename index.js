@@ -1,6 +1,8 @@
 require('dotenv').config();
 const CustomClient = require('./src/utils/Client');
 const { Intents } = require('discord.js');
+const { startOAuthServer } = require('./src/utils/oauth');
+const dataManager = require('./src/utils/dataManager');
 
 const client = new CustomClient({
   intents: [
@@ -16,4 +18,15 @@ const client = new CustomClient({
 process.on('unhandledRejection', console.error);
 process.on('uncaughtException', console.error);
 
-client.init(); 
+async function init() {
+  // Inicializar o gerenciador de dados
+  await dataManager.init();
+  
+  // Inicializar o bot
+  await client.init();
+  
+  // Iniciar o servidor OAuth2
+  startOAuthServer(client);
+}
+
+init(); 

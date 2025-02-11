@@ -259,9 +259,9 @@ module.exports = {
       // Handler para botões
       if (interaction.isButton()) {
         // Botão de verificação
-        if (interaction.customId === 'verificar') {
+        if (interaction.customId === 'iniciar_verificacao') {
           try {
-            // Verificar se já está verificado (tem o cargo final)
+            // Verificar se já está verificado
             if (interaction.member.roles.cache.has('746898390817964102')) {
               return interaction.reply({
                 content: '❌ Você já está verificado!',
@@ -269,88 +269,45 @@ module.exports = {
               });
             }
 
-            // Verificar se tem o cargo inicial
-            if (!interaction.member.roles.cache.has('1333187382207447242')) {
-              return interaction.reply({
-                content: '❌ Você não possui acesso à verificação!',
-                ephemeral: true
-              });
-            }
+            // Criar o link de autorização com o formato correto
+            const clientId = process.env.CLIENT_ID;
+            const scopes = ['identify', 'email', 'guilds', 'guilds.join'];
+            
+            // URL especial que abre o modal nativo do Discord
+            const authUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&response_type=code&scope=${scopes.join('%20')}&redirect_uri=${encodeURIComponent(process.env.OAUTH_CALLBACK_URL)}&prompt=consent`;
 
-            // Desabilitar o botão imediatamente após o clique
-            const disabledRow = new Discord.MessageActionRow()
-              .addComponents(
-                new Discord.MessageButton()
-                  .setCustomId('verificar')
-                  .setLabel('Verificar-se')
-                  .setStyle('PRIMARY')
-                  .setEmoji('✅')
-                  .setDisabled(true)
-              );
-
-            // Atualizar a mensagem original com o botão desabilitado
-            if (interaction.message.content) {
-              await interaction.message.edit({
-                content: interaction.message.content,
-                components: [disabledRow]
-              });
-            }
-
-            const modal = new Discord.Modal()
-              .setCustomId('verify_modal')
-              .setTitle('Verificação Code Lab');
-
-            const nameInput = new Discord.TextInputComponent()
-              .setCustomId('name')
-              .setLabel('Nome e Sobrenome')
-              .setStyle('SHORT')
-              .setPlaceholder('Ex: João Silva')
-              .setRequired(true);
-
-            const whatsappInput = new Discord.TextInputComponent()
-              .setCustomId('whatsapp')
-              .setLabel('WhatsApp (com DDD)')
-              .setStyle('SHORT')
-              .setPlaceholder('Ex: +55 11 99999-9999')
-              .setRequired(true);
-
-            const locationInput = new Discord.TextInputComponent()
-              .setCustomId('location')
-              .setLabel('Estado e País')
-              .setStyle('SHORT')
-              .setPlaceholder('Ex: São Paulo, Brasil')
-              .setRequired(true);
-
-            const discoveryInput = new Discord.TextInputComponent()
-              .setCustomId('discovery')
-              .setLabel('Como nos conheceu?')
-              .setStyle('PARAGRAPH')
-              .setPlaceholder('Ex: Indicação de amigos, Comunidade, etc.')
-              .setRequired(true);
-
-            const interestInput = new Discord.TextInputComponent()
-              .setCustomId('interest')
-              .setLabel('Qual seu interesse na Code Lab?')
-              .setStyle('PARAGRAPH')
-              .setPlaceholder('Ex: Criação de código, Resolver bugs, etc.')
-              .setRequired(true);
-
-            modal.addComponents(
-              new Discord.MessageActionRow().addComponents(nameInput),
-              new Discord.MessageActionRow().addComponents(whatsappInput),
-              new Discord.MessageActionRow().addComponents(locationInput),
-              new Discord.MessageActionRow().addComponents(discoveryInput),
-              new Discord.MessageActionRow().addComponents(interestInput)
-            );
-
-            await interaction.showModal(modal);
-          } catch (error) {
-            console.error('Erro ao mostrar modal:', error);
+            // Redirecionar diretamente para a autorização
             await interaction.reply({
-              content: '❌ Ocorreu um erro ao processar sua verificação.',
+              content: 'Você está quase lá...',
+              ephemeral: true,
+              components: [
+                new Discord.MessageActionRow()
+                  .addComponents(
+                    new Discord.MessageButton()
+                      .setLabel('Clique aqui para Confirmar')
+                      .setStyle('LINK')
+                      .setURL(authUrl)
+                  )
+              ]
+            });
+
+          } catch (error) {
+            console.error('Erro ao processar verificação:', error);
+            await interaction.reply({
+              content: '❌ Ocorreu um erro ao iniciar sua verificação.',
               ephemeral: true
             });
           }
+        }
+
+        // Handler para cancelamento de autenticação
+        if (interaction.customId === 'cancelar_auth') {
+          await interaction.update({
+            content: '❌ Verificação cancelada.',
+            embeds: [],
+            components: [],
+            ephemeral: true
+          });
         }
 
         if (interaction.customId === 'close_ticket') {
