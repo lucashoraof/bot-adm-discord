@@ -159,32 +159,44 @@ module.exports = {
               });
             }
 
-            // Criar o link de autorização com o formato correto
-            const clientId = process.env.CLIENT_ID;
-            const scopes = ['identify', 'email', 'guilds', 'guilds.join'];
-            
-            // URL especial que abre o modal nativo do Discord
-            const authUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&response_type=code&scope=${scopes.join('%20')}&redirect_uri=${encodeURIComponent(process.env.OAUTH_CALLBACK_URL)}&prompt=consent`;
+            // Remover cargo inicial e adicionar cargo verificado
+            await interaction.member.roles.remove('1333187382207447242');
+            await interaction.member.roles.add('746898390817964102');
 
-            // Redirecionar diretamente para a autorização
+            // Enviar log de verificação
+            try {
+              const logChannel = await interaction.guild.channels.fetch(config.logs_channel);
+              if (logChannel) {
+                const logEmbed = new Discord.MessageEmbed()
+                  .setColor('#9bf819')
+                  .setTitle('✅ Novo Membro Verificado')
+                  .addFields([
+                    { name: '👤 Usuário', value: `${interaction.user} (\`${interaction.user.tag}\`)`, inline: true },
+                    { name: '⏰ Verificado em', value: new Date().toLocaleString('pt-BR'), inline: true }
+                  ])
+                  .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true }))
+                  .setFooter({ 
+                    text: `ID: ${interaction.user.id}`,
+                    iconURL: interaction.guild.iconURL({ dynamic: true })
+                  })
+                  .setTimestamp();
+
+                await logChannel.send({ embeds: [logEmbed] });
+              }
+            } catch (logError) {
+              console.error('Erro ao enviar log:', logError);
+            }
+
+            // Confirmar ao usuário
             await interaction.reply({
-              content: 'Você está indo bem ;)',
-              ephemeral: true,
-              components: [
-                new Discord.MessageActionRow()
-                  .addComponents(
-                    new Discord.MessageButton()
-                      .setLabel('Clique aqui para Confirmar')
-                      .setStyle('LINK')
-                      .setURL(authUrl)
-                  )
-              ]
+              content: '✅ **Verificação concluída!** Seja bem-vindo(a) à Code Lab!',
+              ephemeral: true
             });
 
           } catch (error) {
             console.error('Erro ao processar verificação:', error);
             await interaction.reply({
-              content: '❌ Ocorreu um erro ao iniciar sua verificação.',
+              content: '❌ Ocorreu um erro ao processar sua verificação.',
               ephemeral: true
             });
           }

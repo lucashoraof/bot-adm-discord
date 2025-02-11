@@ -1,7 +1,6 @@
 require('dotenv').config();
 const CustomClient = require('./src/utils/Client');
 const { Intents } = require('discord.js');
-const { startOAuthServer } = require('./src/utils/oauth');
 const dataManager = require('./src/utils/dataManager');
 
 const client = new CustomClient({
@@ -24,9 +23,6 @@ async function init() {
   
   // Inicializar o bot
   await client.init();
-  
-  // Iniciar o servidor OAuth2
-  startOAuthServer(client);
 }
 
 init(); 
