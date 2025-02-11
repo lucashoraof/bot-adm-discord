@@ -1,7 +1,6 @@
 const { Client, Collection } = require('discord.js');
 const { readdirSync } = require('fs');
 const path = require('path');
-const ClientManager = require('../database/ClientManager');
 
 class CustomClient extends Client {
   constructor(options) {
@@ -10,7 +9,6 @@ class CustomClient extends Client {
     this.commands = new Collection();
     this.aliases = new Collection();
     this.config = require('../../config.json');
-    this.clientManager = new ClientManager();
   }
 
   async init() {
