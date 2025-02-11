@@ -30,23 +30,7 @@ module.exports = {
         // Menu de tickets
         if (interaction.customId === 'ticket') {
           try {
-            const solicitacoesChannel = await interaction.guild.channels.fetch('1332564926233051209');
             const tipoTicket = interaction.values[0];
-
-            // Verificar se o usuário já tem um ticket aberto ou pendente
-            const ticketPendente = await solicitacoesChannel.messages.fetch()
-              .then(messages => messages.find(m => {
-                if (!m.embeds.length) return false;
-                const embed = m.embeds[0];
-                return embed.fields.find(f => f.name === '👤 Usuário')?.value.includes(interaction.user.id);
-              }));
-
-            if (ticketPendente) {
-              return interaction.reply({
-                content: '❌ Você já tem uma solicitação de ticket pendente. Aguarde ela ser atendida.',
-                ephemeral: true
-              });
-            }
 
             // Verificar se o usuário já tem um ticket aberto
             const ticketAberto = interaction.guild.channels.cache.find(channel => 
@@ -60,45 +44,102 @@ module.exports = {
               });
             }
 
-            // Embed de solicitação
-            const solicitacaoEmbed = new Discord.MessageEmbed()
-              .setColor('#FFA500')
-              .setAuthor({ 
-                name: `Nova Solicitação de ${interaction.user.tag}`,
+            // Definir nome do canal baseado no tipo
+            let channelName;
+            switch (tipoTicket) {
+              case 'sup':
+                channelName = `👥・suporte-${interaction.user.username}`;
+                break;
+              case 'partner':
+                channelName = `🤝・parceria-${interaction.user.username}`;
+                break;
+              case 'resume':
+                channelName = `📃・currículo-${interaction.user.username}`;
+                break;
+              case 'quote':
+                channelName = `🛒・orçamento-${interaction.user.username}`;
+                break;
+              default:
+                channelName = `👥・ticket-${interaction.user.username}`;
+            }
+
+            // Criar canal do ticket
+            const channel = await interaction.guild.channels.create(channelName, {
+              type: 'GUILD_TEXT',
+              parent: config.categoria,
+              topic: `ID: ${interaction.user.id}`,
+              permissionOverwrites: [
+                {
+                  id: interaction.guild.id,
+                  deny: ['VIEW_CHANNEL']
+                },
+                {
+                  id: interaction.user.id,
+                  allow: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY']
+                },
+                {
+                  id: config.suporte,
+                  allow: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY']
+                }
+              ]
+            });
+
+            // Definir mensagem baseada no tipo
+            let ticketDescription;
+            switch (tipoTicket) {
+              case 'sup':
+                ticketDescription = `Olá ${interaction.user}, boas-vindas à **Code Lab**!\n\nNossa equipe irá te atender em breve! Enquanto isso, para tornar nosso **suporte** mais eficiente, sinta-se à vontade para **explicar** suas necessidades ou a **razão** de seu contato.`;
+                break;
+              case 'partner':
+                ticketDescription = `Olá ${interaction.user}, boas-vindas à **Code Lab**!\n\nNossa equipe irá te atender em breve! Enquanto isso, para tornar nosso **suporte** mais eficiente, sinta-se à vontade para **explicar** suas necessidades ou a **razão** de seu contato.`;
+                break;
+              case 'resume':
+                ticketDescription = `Olá ${interaction.user}, boas-vindas à **Code Lab**!\n\nNossa equipe irá te atender em breve! Enquanto isso, para tornar nosso **suporte** mais eficiente, sinta-se à vontade para **explicar** suas necessidades ou a **razão** de seu contato.`;
+                break;
+              case 'quote':
+                ticketDescription = `Olá ${interaction.user}, boas-vindas à **Code Lab**!\n\nNossa equipe irá te atender em breve! Enquanto isso, para tornar nosso **suporte** mais eficiente, sinta-se à vontade para **explicar** suas necessidades ou a **razão** de seu contato.`;
+                break;
+              default:
+                ticketDescription = `Olá ${interaction.user}, boas-vindas à **Code Lab**!\n\nNossa equipe irá te atender em breve! Enquanto isso, para tornar nosso **suporte** mais eficiente, sinta-se à vontade para **explicar** suas necessidades ou a **razão** de seu contato.`;
+            }
+
+            // Criar embed do ticket
+            const ticketEmbed = new Discord.MessageEmbed()
+              .setColor(config.color)
+              .setAuthor({
+                name: `Ticket de ${interaction.user.username}`,
                 iconURL: interaction.user.displayAvatarURL({ dynamic: true })
               })
-              .addFields(
-                { name: '👤 Usuário', value: `${interaction.user}`, inline: true },
-                { name: '🎟️ Tipo', value: tipoTicket, inline: true },
-                { name: '🕒 Horário', value: new Date().toLocaleString('pt-BR'), inline: true }
+              .setDescription(ticketDescription)
+              .setThumbnail('https://media.discordapp.net/attachments/926259039803945000/1328499098420121670/Logo_Code_Lab.jpg');
+
+            // Botão Admin
+            const adminRow = new Discord.MessageActionRow()
+              .addComponents(
+                new Discord.MessageButton()
+                  .setCustomId('admin_actions')
+                  .setLabel('Admin')
+                  .setStyle('SECONDARY')
+                  .setEmoji('⚙️')
               );
 
-            // Botão para aceitar
-            const actionRow = new Discord.MessageActionRow().addComponents(
-              new Discord.MessageButton()
-                .setCustomId(`aceitar_ticket_${interaction.user.id}_${tipoTicket}`)
-                .setLabel('Atender Ticket')
-                .setStyle('SUCCESS')
-                .setEmoji('📨')
-            );
-
-            // Enviar para o canal de solicitações
-            await solicitacoesChannel.send({
-              content: 'Nova solicitação de ticket:',
-              embeds: [solicitacaoEmbed],
-              components: [actionRow]
+            // Enviar mensagem inicial
+            await channel.send({
+              content: `${interaction.user} <@&${config.suporte}>`,
+              embeds: [ticketEmbed],
+              components: [adminRow]
             });
 
             // Confirmar ao usuário
             await interaction.reply({
-              content: '🎟️ **Solicitação registrada com sucesso!**\n\nSua solicitação está na nossa fila de atendimento e será processada por ordem de chegada.\n\nVocê receberá uma notificação na DM assim que nosso time iniciar seu atendimento.',
+              content: `✅ Seu ticket foi criado em ${channel}`,
               ephemeral: true
             });
 
           } catch (error) {
-            console.error('Erro ao processar ticket:', error);
+            console.error('Erro ao criar ticket:', error);
             await interaction.reply({
-              content: '❌ Ocorreu um erro ao processar sua solicitação.',
+              content: '❌ Ocorreu um erro ao criar o ticket.',
               ephemeral: true
             });
           }
@@ -345,34 +386,22 @@ module.exports = {
           const userId = channel.topic.split(': ')[1];
           
           try {
-            const user = await interaction.guild.members.fetch(userId);
-            const closeEmbed = new Discord.MessageEmbed()
-              .setColor(config.color)
-              .setAuthor({ 
-                name: 'Sistema de notificação da Code Lab', 
-                iconURL: interaction.guild.iconURL({ dynamic: true }) 
-              })
-              .setDescription(`Olá ${user}, seu ticket foi encerrado.\n\n**Motivo:** ${motivo}`)
-              .setImage('https://media.discordapp.net/attachments/926259039803945000/1328499097371410473/Banner_Notificacoes_1.jpg')
-              .setTimestamp();
-
+            // Enviar DM para o usuário
             try {
+              const user = await interaction.guild.members.fetch(userId);
+              const closeEmbed = new Discord.MessageEmbed()
+                .setColor(config.color)
+                .setAuthor({ 
+                  name: 'Sistema de notificação da Code Lab', 
+                  iconURL: interaction.guild.iconURL({ dynamic: true }) 
+                })
+                .setDescription(`Olá ${user}, seu ticket foi encerrado.\n\n**Motivo:** ${motivo}`)
+                .setImage('https://media.discordapp.net/attachments/926259039803945000/1328499097371410473/Banner_Notificacoes_1.jpg')
+                .setTimestamp();
+
               await user.send({ embeds: [closeEmbed] });
             } catch (dmError) {
-              console.log(`Não foi possível enviar DM para ${user.tag} - DMs fechadas`);
-            }
-
-            // Remover mensagem pendente se existir
-            const solicitacoesChannel = await interaction.guild.channels.fetch('1332564926233051209');
-            const ticketPendente = await solicitacoesChannel.messages.fetch()
-              .then(messages => messages.find(m => {
-                if (!m.embeds.length) return false;
-                const embed = m.embeds[0];
-                return embed.fields.find(f => f.name === '👤 Usuário')?.value.includes(userId);
-              }));
-
-            if (ticketPendente) {
-              await ticketPendente.delete().catch(() => {});
+              console.log(`Não foi possível enviar DM para o usuário - DMs fechadas`);
             }
 
             // Envia mensagem no canal antes de deletar
@@ -398,156 +427,6 @@ module.exports = {
             console.error('Erro ao fechar ticket:', error);
             await interaction.reply({
               content: '❌ Ocorreu um erro ao fechar o ticket.',
-              ephemeral: true
-            });
-          }
-        }
-      }
-
-      // Handler para botão de aceitar ticket
-      if (interaction.isButton() && interaction.customId.startsWith('aceitar_ticket_')) {
-        try {
-          const [, , userId, tipoTicket] = interaction.customId.split('_');
-          
-          // Responder imediatamente à interação
-          await interaction.deferReply({ ephemeral: true });
-          
-          const user = await interaction.guild.members.fetch(userId);
-          
-          // Definir nome do canal baseado no tipo
-          let channelName;
-          switch (tipoTicket) {
-            case 'sup':
-              channelName = `👥・suporte-${user.user.username}`;
-              break;
-            case 'partner':
-              channelName = `🤝・parceria-${user.user.username}`;
-              break;
-            case 'resume':
-              channelName = `📃・currículo-${user.user.username}`;
-              break;
-            case 'quote':
-              channelName = `🛒・orçamento-${user.user.username}`;
-              break;
-            default:
-              channelName = `👥・ticket-${user.user.username}`;
-          }
-
-          // Criar canal do ticket
-          const channel = await interaction.guild.channels.create(channelName, {
-            type: 'GUILD_TEXT',
-            parent: config.categoria,
-            topic: `ID: ${userId}`,
-            permissionOverwrites: [
-              {
-                id: interaction.guild.id,
-                deny: ['VIEW_CHANNEL']
-              },
-              {
-                id: userId,
-                allow: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY']
-              },
-              {
-                id: interaction.user.id,
-                allow: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY']
-              }
-            ]
-          });
-
-          // Definir mensagem baseada no tipo
-          let ticketDescription;
-          switch (tipoTicket) {
-            case 'sup':
-              ticketDescription = `Olá, boas-vindas à **Code Lab**!\n\nNossa equipe irá te atender em breve! Enquanto isso, para tornar nosso **suporte** mais eficiente, sinta-se à vontade para **explicar** suas necessidades ou a **razão** de seu contato.`;
-              break;
-            case 'partner':
-              ticketDescription = `Olá, boas-vindas à **Code Lab**!\n\nNossa equipe irá te atender em breve! Enquanto isso, para tornar nosso **suporte** mais eficiente, sinta-se à vontade para **explicar** suas necessidades ou a **razão** de seu contato.`;
-              break;
-            case 'resume':
-              ticketDescription = `Olá, boas-vindas à **Code Lab**!\n\nNossa equipe irá te atender em breve! Enquanto isso, para tornar nosso **suporte** mais eficiente, sinta-se à vontade para **explicar** suas necessidades ou a **razão** de seu contato.`;
-              break;
-            case 'quote':
-              ticketDescription = `Olá, boas-vindas à **Code Lab**!\n\nNossa equipe irá te atender em breve! Enquanto isso, para tornar nosso **suporte** mais eficiente, sinta-se à vontade para **explicar** suas necessidades ou a **razão** de seu contato.`;
-              break;
-            default:
-              ticketDescription = `Olá, boas-vindas à **Code Lab**!\n\nNossa equipe irá te atender em breve! Enquanto isso, para tornar nosso **suporte** mais eficiente, sinta-se à vontade para **explicar** suas necessidades ou a **razão** de seu contato.`;
-          }
-
-          // Criar embed do ticket
-          const ticketEmbed = new Discord.MessageEmbed()
-            .setColor(config.color)
-            .setAuthor({
-              name: `Ticket de ${user.user.username}`,
-              iconURL: user.user.displayAvatarURL({ dynamic: true })
-            })
-            .setDescription(ticketDescription)
-            .setThumbnail('https://media.discordapp.net/attachments/926259039803945000/1328499098420121670/Logo_Code_Lab.jpg');
-
-          // Botão Admin
-          const adminRow = new Discord.MessageActionRow()
-            .addComponents(
-              new Discord.MessageButton()
-                .setCustomId('admin_actions')
-                .setLabel('Admin')
-                .setStyle('SECONDARY')
-                .setEmoji('⚙️')
-            );
-
-          // Enviar mensagem inicial
-          await channel.send({
-            content: `${user} ${interaction.user}`,
-            embeds: [ticketEmbed],
-            components: [adminRow]
-          });
-
-          // Notificar usuário via DM
-          try {
-            const dmEmbed = new Discord.MessageEmbed()
-              .setColor(config.color)
-              .setAuthor({ 
-                name: 'Sistema de notificação da Code Lab', 
-                iconURL: interaction.guild.iconURL({ dynamic: true }) 
-              })
-              .setDescription(`${user}, você está por ai?\n\nSeu ticket foi aceito pelo nosso time!\n\nClique no botão abaixo para acessar o ticket.`)
-              .setImage('https://media.discordapp.net/attachments/926259039803945000/1333577493046886440/Banner_Notificacoes.jpg?ex=67996653&is=679814d3&hm=713fc3b95964f546d1b2eb06b8a5cd948734bb54b8747561046fa63e8becea96&=&format=webp&width=1440&height=308')
-              .setTimestamp();
-
-            const dmButton = new Discord.MessageActionRow().addComponents(
-              new Discord.MessageButton()
-                .setLabel('Ir para o Ticket')
-                .setURL(`https://discord.com/channels/${interaction.guild.id}/${channel.id}`)
-                .setStyle('LINK')
-                .setEmoji('🎟️')
-            );
-
-            await user.send({ 
-              embeds: [dmEmbed],
-              components: [dmButton] 
-            });
-          } catch (dmError) {
-            console.log(`Não foi possível enviar DM para ${user.tag}`);
-            await channel.send(`${user} Não foi possível enviar DM, verifique suas configurações de privacidade!`);
-          }
-
-          // Atualizar mensagem original
-          await interaction.message.delete().catch(() => {});
-
-          // Atualizar a resposta da interação
-          await interaction.editReply({
-            content: `✅ Ticket criado em ${channel}`,
-            ephemeral: true
-          });
-
-        } catch (error) {
-          console.error('Erro ao criar ticket:', error);
-          if (interaction.deferred) {
-            await interaction.editReply({
-              content: '❌ Erro ao criar o ticket!',
-              ephemeral: true
-            });
-          } else {
-            await interaction.reply({
-              content: '❌ Erro ao criar o ticket!',
               ephemeral: true
             });
           }
