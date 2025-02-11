@@ -1,7 +1,6 @@
 require('dotenv').config();
 const CustomClient = require('./src/utils/Client');
 const { Intents } = require('discord.js');
-const dataManager = require('./src/utils/dataManager');
 
 const client = new CustomClient({
   intents: [
@@ -18,9 +17,6 @@ process.on('unhandledRejection', console.error);
 process.on('uncaughtException', console.error);
 
 async function init() {
-  // Inicializar o gerenciador de dados
-  await dataManager.init();
-  
   // Inicializar o bot
   await client.init();
 }
