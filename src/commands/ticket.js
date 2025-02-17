@@ -16,7 +16,7 @@ module.exports = {
 
     // Criar o embed do ticket
     const ticketEmbed = new Discord.MessageEmbed()
-      .setColor('#2c58f9')
+      .setColor(config.color)
       .setTitle('Central de Atendimento da Code Lab')
       .setDescription(`🇧🇷 Nessa seção, você pode tirar suas dúvidas, solicitar orçamentos ou entrar em contato com a nossa equipe da Code Lab, leia as opções abaixo e escolha a que melhor se encaixa com o seu caso para iniciar seu atendimento.\n\n🇺🇸 In this section, you can ask questions, request quotes or contact our Code Lab team. Read the options below and choose the one that best fits your case to start your service.`)
       .setImage('https://media.discordapp.net/attachments/926259039803945000/1328499097925189662/Banner_Notificacoes_3.jpg');

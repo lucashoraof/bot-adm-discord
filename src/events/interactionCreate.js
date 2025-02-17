@@ -168,7 +168,7 @@ module.exports = {
               const logChannel = await interaction.guild.channels.fetch(config.logs_channel);
               if (logChannel) {
                 const logEmbed = new Discord.MessageEmbed()
-                  .setColor('#9bf819')
+                  .setColor(config.color)
                   .setTitle('✅ Novo Membro Verificado')
                   .addFields([
                     { name: '👤 Usuário', value: `${interaction.user} (\`${interaction.user.tag}\`)`, inline: true },
@@ -282,7 +282,7 @@ module.exports = {
             case 'notify_user':
               const user = await interaction.guild.members.fetch(userId);
               const notifyEmbed = new Discord.MessageEmbed()
-                .setColor('#2c58f9')
+                .setColor(config.color)
                 .setAuthor({ 
                   name: 'Sistema de notificação da Code Lab', 
                   iconURL: interaction.guild.iconURL({ dynamic: true }) 
