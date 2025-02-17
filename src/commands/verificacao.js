@@ -19,7 +19,7 @@ module.exports = {
       .addComponents(
         new Discord.MessageButton()
           .setCustomId('iniciar_verificacao')
-          .setLabel('Iniciar Verificação Segura')
+          .setLabel('Iniciar Verificação | Start Verification')
           .setStyle('SUCCESS')
       );
 
