@@ -96,7 +96,7 @@ module.exports = {
           name: `Ticket de ${user.username}`,
           iconURL: user.displayAvatarURL({ dynamic: true })
         })
-        .setDescription(`Olá, boas-vindas à **Code Lab**!\n\nNossa equipe irá te atender em breve! Enquanto isso, para tornar nosso **suporte** mais eficiente, sinta-se à vontade para **explicar** suas necessidades ou a **razão** de seu contato.`)
+        .setDescription(`Olá, boas-vindas à **Code Lab**!\n\n🇧🇷🇵🇹 Nossa equipe irá te atender em breve! Enquanto isso, para tornar nosso **suporte** mais eficiente, sinta-se à vontade para **explicar** suas necessidades ou a **razão** de seu contato.\n\n🇬🇧🇺🇸 Our team will be in touch with you shortly! In the meantime, to make our **support** more efficient, please feel free to **explain** your needs or the **reason** for your contact.`)
         .setThumbnail('https://media.discordapp.net/attachments/926259039803945000/1328499098420121670/Logo_Code_Lab.jpg');
 
       // Botão Admin
