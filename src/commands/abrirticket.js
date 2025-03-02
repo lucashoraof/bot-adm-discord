@@ -4,7 +4,7 @@ const { Constants } = require('discord.js');
 
 module.exports = {
   name: 'abrirticket',
-  description: 'Abre um ticket para um usuário específico',
+  description: 'Abre um ticket para um usuário',
   type: 'CHAT_INPUT',
   options: [
     {
@@ -15,7 +15,7 @@ module.exports = {
     },
     {
       name: 'tipo',
-      description: 'Tipo do ticket',
+      description: 'Categoria do ticket',
       type: Constants.ApplicationCommandOptionTypes.STRING,
       required: true,
       choices: [
@@ -51,11 +51,11 @@ module.exports = {
     const tipoTicket = interaction.options.getString('tipo');
 
     try {
-      // Define o nome do canal baseado no tipo
+      // Define o nome do canal baseado na categoria
       let channelName;
       switch (tipoTicket) {
         case 'sup':
-          channelName = `👥・suporte-${user.username}`;
+          channelName = `📞・suporte-${user.username}`;
           break;
         case 'partner':
           channelName = `🤝・parceria-${user.username}`;
