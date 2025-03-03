@@ -148,60 +148,6 @@ module.exports = {
 
       // Handler para botões
       if (interaction.isButton()) {
-        // Botão de verificação
-        if (interaction.customId === 'iniciar_verificacao') {
-          try {
-            // Verificar se já está verificado
-            if (interaction.member.roles.cache.has('746898390817964102')) {
-              return interaction.reply({
-                content: '**Ops!** Você já está verificado, não precisa fazer isso de novo!',
-                ephemeral: true
-              });
-            }
-
-            // Remover cargo inicial e adicionar cargo verificado
-            await interaction.member.roles.remove('1333187382207447242');
-            await interaction.member.roles.add('746898390817964102');
-
-            // Enviar log de verificação
-            try {
-              const logChannel = await interaction.guild.channels.fetch(config.logs_channel);
-              if (logChannel) {
-                const logEmbed = new Discord.MessageEmbed()
-                  .setColor(config.color)
-                  .setTitle('✅ Novo Membro Verificado')
-                  .addFields([
-                    { name: '👤 Usuário', value: `${interaction.user} (\`${interaction.user.tag}\`)`, inline: true },
-                    { name: '⏰ Verificado em', value: new Date().toLocaleString('pt-BR'), inline: true }
-                  ])
-                  .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true }))
-                  .setFooter({ 
-                    text: `ID: ${interaction.user.id}`,
-                    iconURL: interaction.guild.iconURL({ dynamic: true })
-                  })
-                  .setTimestamp();
-
-                await logChannel.send({ embeds: [logEmbed] });
-              }
-            } catch (logError) {
-              console.error('Erro ao enviar log:', logError);
-            }
-
-            // Confirmar ao usuário
-            await interaction.reply({
-              content: '✅ **Verificação concluída!** Seja bem-vindo(a) à Code Lab!',
-              ephemeral: true
-            });
-
-          } catch (error) {
-            console.error('Erro ao processar verificação:', error);
-            await interaction.reply({
-              content: '❌ Ocorreu um erro ao processar sua verificação.',
-              ephemeral: true
-            });
-          }
-        }
-
         // Handler para botão Admin
         if (interaction.customId === 'admin_actions') {
           // Verificar se o usuário tem permissão

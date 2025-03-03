@@ -6,7 +6,7 @@ module.exports = {
   async execute(member) {
     try {
       // Adicionar cargo ao entrar no servidor
-      const cargoInicialID = '1333187382207447242'; 
+      const cargoInicialID = '746898390817964102'; 
 
       await member.roles.add(cargoInicialID);
 
@@ -14,4 +14,4 @@ module.exports = {
       console.error('Erro ao adicionar cargo automático:', error);
     }
   }
-}; 
+};
