@@ -61,7 +61,7 @@ module.exports = {
             const channel = await interaction.guild.channels.create(channelName, {
               type: 'GUILD_TEXT',
               parent: config.categoria,
-              topic: `ID: ${interaction.user.id}`,
+              topic: `ID: ${interaction.user.id} | Created: ${Date.now()}`,
               permissionOverwrites: [
                 {
                   id: interaction.guild.id,
