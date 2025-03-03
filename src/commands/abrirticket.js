@@ -24,14 +24,6 @@ module.exports = {
           value: 'sup'
         },
         {
-          name: 'Parceria',
-          value: 'partner'
-        },
-        {
-          name: 'Currículo',
-          value: 'resume'
-        },
-        {
           name: 'Orçamento',
           value: 'quote'
         }
@@ -56,12 +48,6 @@ module.exports = {
       switch (tipoTicket) {
         case 'sup':
           channelName = `📞・suporte-${user.username}`;
-          break;
-        case 'partner':
-          channelName = `🤝・parceria-${user.username}`;
-          break;
-        case 'resume':
-          channelName = `📃・currículo-${user.username}`;
           break;
         case 'quote':
           channelName = `🛒・orçamento-${user.username}`;

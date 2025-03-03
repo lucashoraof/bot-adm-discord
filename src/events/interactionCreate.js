@@ -50,12 +50,6 @@ module.exports = {
               case 'sup':
                 channelName = `👥・suporte-${interaction.user.username}`;
                 break;
-              case 'partner':
-                channelName = `🤝・parceria-${interaction.user.username}`;
-                break;
-              case 'resume':
-                channelName = `📃・currículo-${interaction.user.username}`;
-                break;
               case 'quote':
                 channelName = `🛒・orçamento-${interaction.user.username}`;
                 break;
@@ -89,12 +83,6 @@ module.exports = {
             switch (tipoTicket) {
               case 'sup':
                 ticketDescription = `Olá ${interaction.user}, boas-vindas à **Code Lab**!\n\n🇧🇷🇵🇹 Nossa equipe irá te atender em breve! Enquanto isso, para tornar nosso **suporte** mais eficiente, sinta-se à vontade para **explicar** suas necessidades ou a **razão** de seu contato.\n\n🇬🇧🇺🇸 Our team will be in touch with you shortly! In the meantime, to make our **support** more efficient, please feel free to **explain** your needs or the **reason** for your contact.`;
-                break;
-              case 'partner':
-                ticketDescription = `Olá ${interaction.user}, boas-vindas à **Code Lab**!\n\n🇧🇷🇵🇹 Nossa equipe irá te atender em breve! Enquanto isso, para tornar nosso **suporte** mais eficiente, sinta-se à vontade para **explicar** suas necessidades ou a **razão** de seu contato.\n\n 🇬🇧🇺🇸 Our team will be in touch with you shortly! In the meantime, to make our **support** more efficient, please feel free to **explain** your needs or the **reason** for your contact.`;
-                break;
-              case 'resume':
-                ticketDescription = `Olá ${interaction.user}, boas-vindas à **Code Lab**!\n\n🇧🇷🇵🇹 Nossa equipe irá te atender em breve! Enquanto isso, para tornar nosso **suporte** mais eficiente, sinta-se à vontade para **explicar** suas necessidades ou a **razão** de seu contato.\n\n 🇬🇧🇺🇸 Our team will be in touch with you shortly! In the meantime, to make our **support** more efficient, please feel free to **explain** your needs or the **reason** for your contact.`;
                 break;
               case 'quote':
                 ticketDescription = `Olá ${interaction.user}, boas-vindas à **Code Lab**!\n\n🇧🇷🇵🇹 Nossa equipe irá te atender em breve! Enquanto isso, para tornar nosso **suporte** mais eficiente, sinta-se à vontade para **explicar** suas necessidades ou a **razão** de seu contato.\n\n 🇬🇧🇺🇸 Our team will be in touch with you shortly! In the meantime, to make our **support** more efficient, please feel free to **explain** your needs or the **reason** for your contact.`;
