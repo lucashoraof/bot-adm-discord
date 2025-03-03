@@ -48,7 +48,7 @@ module.exports = {
             let channelName;
             switch (tipoTicket) {
               case 'sup':
-                channelName = `👥・suporte-${interaction.user.username}`;
+                channelName = `📞・suporte-${interaction.user.username}`;
                 break;
               case 'quote':
                 channelName = `🛒・orçamento-${interaction.user.username}`;
