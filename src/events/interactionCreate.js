@@ -195,7 +195,9 @@ module.exports = {
               ephemeral: true
             });
           }
-          const userId = channel.topic.split(': ')[1];
+          const userIdMatch = channel.topic.match(/ID: (\d+)/);
+const userId = userIdMatch ? userIdMatch[1] : null;
+if (!userId) throw new Error('Formato de ID inválido no tópico');
 
           switch (interaction.values[0]) {
             case 'close_ticket':
@@ -329,7 +331,9 @@ module.exports = {
         if (interaction.customId === 'close_ticket_modal') {
           const motivo = interaction.fields.getTextInputValue('motivo');
           const channel = interaction.channel;
-          const userId = channel.topic.split(': ')[1];
+          const userIdMatch = channel.topic.match(/ID: (\d+)/);
+const userId = userIdMatch ? userIdMatch[1] : null;
+if (!userId) throw new Error('Formato de ID inválido no tópico');
           
           try {
             // Enviar DM para o usuário
