@@ -153,25 +153,21 @@ module.exports = {
               .addOptions([
                 {
                   label: 'Fechar Ticket',
-                  description: 'Encerrar este atendimento',
                   value: 'close_ticket',
                   emoji: '🔒'
                 },
                 {
                   label: 'Notificar Usuário',
-                  description: 'Enviar notificação',
                   value: 'notify_user',
                   emoji: '📢'
                 },
                 {
                   label: 'Adicionar Usuário',
-                  description: 'Incluir alguém no ticket',
                   value: 'add_user',
                   emoji: '➕'
                 },
                 {
                   label: 'Remover Usuário',
-                  description: 'Remover alguém do ticket',
                   value: 'remove_user',
                   emoji: '➖'
                 }
