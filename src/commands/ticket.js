@@ -1,11 +1,19 @@
+// ---------------------------------------------------------------------------------------------------------------------
+// REQUIREMENTS
+// ---------------------------------------------------------------------------------------------------------------------
 const Discord = require('discord.js');
 const config = require('../../config.json');
-
+// ---------------------------------------------------------------------------------------------------------------------
+// SLASH COMMAND
+// ---------------------------------------------------------------------------------------------------------------------
 module.exports = {
   name: 'ticket',
   description: 'Cria o painel de tickets',
   type: 'CHAT_INPUT',
-  defaultPermission: false, // Apenas staff pode usar
+  defaultPermission: false,
+// ---------------------------------------------------------------------------------------------------------------------
+// VERIFICATION PERMISSION
+// ---------------------------------------------------------------------------------------------------------------------
   async execute(interaction) {
     if (!interaction.member.permissions.has('ADMINISTRATOR')) {
       return interaction.reply({
@@ -13,15 +21,17 @@ module.exports = {
         ephemeral: true
       });
     }
-
-    // Criar o embed do ticket
+// ---------------------------------------------------------------------------------------------------------------------
+// EMBED SERVICE
+// ---------------------------------------------------------------------------------------------------------------------
     const ticketEmbed = new Discord.MessageEmbed()
       .setColor(config.color)
       .setTitle('Central de Atendimento ao Cliente')
       .setDescription(`🇧🇷🇵🇹 Nessa seção, você pode tirar suas dúvidas, solicitar orçamentos ou entrar em contato com a nossa equipe da Code Lab, leia as opções abaixo e escolha a que melhor se encaixa com o seu caso para iniciar seu atendimento.\n\n🇬🇧🇺🇸 In this section, you can ask questions, request quotes or contact our Code Lab team. Read the options below and choose the one that best fits your case to start your service.`)
       .setImage('https://media.discordapp.net/attachments/926259039803945000/1328499097925189662/Banner_Notificacoes_3.jpg');
-
-    // Criar o menu de seleção
+// ---------------------------------------------------------------------------------------------------------------------
+// SELECTION MENU
+// ---------------------------------------------------------------------------------------------------------------------
     const selectMenu = new Discord.MessageActionRow().addComponents(
       new Discord.MessageSelectMenu()
         .setCustomId('ticket')
@@ -39,8 +49,9 @@ module.exports = {
           }
         ])
     );
-
-    // Enviar o embed com o menu
+  // ---------------------------------------------------------------------------------------------------------------------
+// SEND THE TICKET PANEL
+// ---------------------------------------------------------------------------------------------------------------------
     try {
       await interaction.channel.send({
         embeds: [ticketEmbed],
