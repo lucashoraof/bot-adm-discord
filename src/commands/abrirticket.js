@@ -1,7 +1,12 @@
+// ---------------------------------------------------------------------------------------------------------------------
+// REQUIREMENTS
+// ---------------------------------------------------------------------------------------------------------------------
 const Discord = require('discord.js');
 const config = require('../../config.json');
 const { Constants } = require('discord.js');
-
+// ---------------------------------------------------------------------------------------------------------------------
+// FLOW EXECUTION
+// ---------------------------------------------------------------------------------------------------------------------
 module.exports = {
   name: 'abrirticket',
   description: 'Abre um ticket para um usuário',
@@ -30,8 +35,10 @@ module.exports = {
       ]
     }
   ],
+// ---------------------------------------------------------------------------------------------------------------------
+// VERIFICATION PERSMISSION
+// ---------------------------------------------------------------------------------------------------------------------
   async execute(interaction) {
-    // Verifica permissão do staff
     if (!interaction.member.permissions.has('ADMINISTRATOR')) {
       return interaction.reply({
         content: '❌ Você não tem permissão para usar este comando.',
@@ -41,9 +48,10 @@ module.exports = {
 
     const user = interaction.options.getUser('usuario');
     const tipoTicket = interaction.options.getString('tipo');
-
+// ---------------------------------------------------------------------------------------------------------------------
+// SETS CHANNEL NAME BASEAD ON CATEGORY
+// ---------------------------------------------------------------------------------------------------------------------
     try {
-      // Define o nome do canal baseado na categoria
       let channelName;
       switch (tipoTicket) {
         case 'sup':
@@ -53,8 +61,9 @@ module.exports = {
           channelName = `🛒・orçamento-${user.username}`;
           break;
       }
-
-      // Criar canal do ticket
+// ---------------------------------------------------------------------------------------------------------------------
+// CREATE CHANNEL OF TICKET
+// ---------------------------------------------------------------------------------------------------------------------
       const channel = await interaction.guild.channels.create(channelName, {
         type: 'GUILD_TEXT',
         parent: config.categoria,
@@ -74,8 +83,9 @@ module.exports = {
           }
         ]
       });
-
-      // Criar embed inicial
+// ---------------------------------------------------------------------------------------------------------------------
+// INITIAL EMBED
+// ---------------------------------------------------------------------------------------------------------------------
       const ticketEmbed = new Discord.MessageEmbed()
         .setColor(config.color)
         .setAuthor({
@@ -84,8 +94,9 @@ module.exports = {
         })
         .setDescription(`Olá, boas-vindas à **Code Lab**!\n\n🇧🇷🇵🇹 Nossa equipe irá te atender em breve! Enquanto isso, para tornar nosso **suporte** mais eficiente, sinta-se à vontade para **explicar** suas necessidades ou a **razão** de seu contato.\n\n🇬🇧🇺🇸 Our team will be in touch with you shortly! In the meantime, to make our **support** more efficient, please feel free to **explain** your needs or the **reason** for your contact.`)
         .setThumbnail('https://media.discordapp.net/attachments/926259039803945000/1328499098420121670/Logo_Code_Lab.jpg');
-
-      // Botão Admin
+// ---------------------------------------------------------------------------------------------------------------------
+// ADMIN BUTTON
+// ---------------------------------------------------------------------------------------------------------------------
       const adminRow = new Discord.MessageActionRow()
         .addComponents(
           new Discord.MessageButton()
@@ -94,15 +105,17 @@ module.exports = {
             .setStyle('SECONDARY')
             .setEmoji('⚙️')
         );
-
-      // Enviar mensagem inicial
+// ---------------------------------------------------------------------------------------------------------------------
+// MESSAGE SEND INITIAL
+// ---------------------------------------------------------------------------------------------------------------------
       await channel.send({
         content: `${user} ${interaction.user}`,
         embeds: [ticketEmbed],
         components: [adminRow]
       });
-
-      // Notificar via DM
+// ---------------------------------------------------------------------------------------------------------------------
+// DM NOTIFICATION
+// ---------------------------------------------------------------------------------------------------------------------
       try {
         const dmEmbed = new Discord.MessageEmbed()
           .setColor(config.color)
@@ -131,8 +144,9 @@ module.exports = {
         console.log(`Não foi possível enviar DM para ${user.tag}`);
         await channel.send(`${user} Não foi possível enviar DM, verifique suas configurações de privacidade!`);
       }
-
-      // Responder ao comando
+// ---------------------------------------------------------------------------------------------------------------------
+// COMMAND RESPONSE
+// ---------------------------------------------------------------------------------------------------------------------
       await interaction.reply({
         content: `✅ Ticket criado com sucesso em ${channel}`,
         ephemeral: true
