@@ -1,3 +1,6 @@
+// ---------------------------------------------------------------------------------------------------------------------
+// REQUIREMENTS
+// ---------------------------------------------------------------------------------------------------------------------
 const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const config = require('../../config.json');
 const Discord = require('discord.js');
@@ -44,7 +47,9 @@ module.exports = {
               });
             }
 
-            // Definir nome do canal baseado no tipo
+// ---------------------------------------------------------------------------------------------------------------------
+// CHANNEL NAME BASED ON CATEGORY
+// ---------------------------------------------------------------------------------------------------------------------
             let channelName;
             switch (tipoTicket) {
               case 'sup':
@@ -56,8 +61,9 @@ module.exports = {
               default:
                 channelName = `👥・ticket-${interaction.user.username}`;
             }
-
-            // Criar canal do ticket
+// ---------------------------------------------------------------------------------------------------------------------
+// CREATE TICKET CHANNEL
+// ---------------------------------------------------------------------------------------------------------------------
             const channel = await interaction.guild.channels.create(channelName, {
               type: 'GUILD_TEXT',
               parent: config.categoria,
@@ -77,8 +83,9 @@ module.exports = {
                 }
               ]
             });
-
-            // Mensagem/embed do ticket baseado na opção selecionada
+// ---------------------------------------------------------------------------------------------------------------------
+// TICKET MESSAGE/EMBED BASED ON SELECTED OPTION
+// ---------------------------------------------------------------------------------------------------------------------
             let ticketDescription;
             switch (tipoTicket) {
               case 'sup':
@@ -90,8 +97,9 @@ module.exports = {
               default:
                 ticketDescription = `Olá ${interaction.user}, boas-vindas à **Code Lab**!\n\n🇧🇷🇵🇹 Nossa equipe irá te atender em breve! Enquanto isso, para tornar nosso **suporte** mais eficiente, sinta-se à vontade para **explicar** suas necessidades ou a **razão** de seu contato.\n\n 🇬🇧🇺🇸 Our team will be in touch with you shortly! In the meantime, to make our **support** more efficient, please feel free to **explain** your needs or the **reason** for your contact.`;
             }
-
-            // Criar embed do ticket
+// ---------------------------------------------------------------------------------------------------------------------
+// CREATE TICKET EMBED
+// ---------------------------------------------------------------------------------------------------------------------
             const ticketEmbed = new Discord.MessageEmbed()
               .setColor(config.color)
               .setAuthor({
@@ -100,8 +108,9 @@ module.exports = {
               })
               .setDescription(ticketDescription)
               .setThumbnail('https://media.discordapp.net/attachments/926259039803945000/1328499098420121670/Logo_Code_Lab.jpg');
-
-            // Botão Admin
+// ---------------------------------------------------------------------------------------------------------------------
+// ADMIN BUTTON
+// ---------------------------------------------------------------------------------------------------------------------
             const adminRow = new Discord.MessageActionRow()
               .addComponents(
                 new Discord.MessageButton()
@@ -110,17 +119,19 @@ module.exports = {
                   .setStyle('SECONDARY')
                   .setEmoji('⚙️')
               );
-
-            // Enviar mensagem inicial
+// ---------------------------------------------------------------------------------------------------------------------
+// SEND INITIAL MESSAGE
+// ---------------------------------------------------------------------------------------------------------------------
             await channel.send({
               content: `${interaction.user} <@&${config.suporte}>`,
               embeds: [ticketEmbed],
               components: [adminRow]
             });
-
-            // Confirmar ao usuário
+// ---------------------------------------------------------------------------------------------------------------------
+// CONFIRM TO USER
+// ---------------------------------------------------------------------------------------------------------------------
             await interaction.reply({
-              content: `**Muito bem!** Seu ticket foi criado com sucesso em ${channel}`,
+              content: `Seu ticket foi criado com sucesso em ${channel}`,
               ephemeral: true
             });
 
@@ -133,12 +144,11 @@ module.exports = {
           }
         }
       }
-
-      // Handler para botões
+// ---------------------------------------------------------------------------------------------------------------------
+// HANDLER FOR BUTTONS
+// ---------------------------------------------------------------------------------------------------------------------
       if (interaction.isButton()) {
-        // Handler para botão Admin
         if (interaction.customId === 'admin_actions') {
-          // Verificar se o usuário tem permissão
           if (!interaction.member.permissions.has('ADMINISTRATOR')) {
             return interaction.reply({
               content: '❌ Apenas a equipe administrativa pode usar este botão.',
@@ -180,8 +190,9 @@ module.exports = {
           });
         }
       }
-
-      // Handler para ações do menu admin
+// ---------------------------------------------------------------------------------------------------------------------
+// HANDLER FOR ADMIN MENU ACTIONS
+// ---------------------------------------------------------------------------------------------------------------------
       if (interaction.isSelectMenu() && interaction.customId === 'admin_menu') {
         try {
           const channel = interaction.channel;
@@ -282,7 +293,6 @@ if (!userId) throw new Error('Formato de ID inválido no tópico');
         }
       }
 
-      // Handler para modais
       if (interaction.isModalSubmit()) {
         if (interaction.customId === 'add_user_modal') {
           const userId = interaction.fields.getTextInputValue('user_id');
@@ -332,7 +342,6 @@ const userId = userIdMatch ? userIdMatch[1] : null;
 if (!userId) throw new Error('Formato de ID inválido no tópico');
           
           try {
-            // Enviar DM para o usuário
             try {
               const user = await interaction.guild.members.fetch(userId);
               const closeEmbed = new Discord.MessageEmbed()
@@ -350,12 +359,10 @@ if (!userId) throw new Error('Formato de ID inválido no tópico');
               console.log(`Não foi possível enviar DM para o usuário - DMs fechadas`);
             }
 
-            // Envia mensagem no canal antes de deletar
             await channel.send({ 
               content: `✅ Ticket fechado por ${interaction.user}\n📝 **Motivo:** ${motivo}` 
             });
 
-            // Pequeno delay antes de deletar o canal
             setTimeout(async () => {
               try {
                 await channel.delete();
