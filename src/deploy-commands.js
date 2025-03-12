@@ -1,3 +1,6 @@
+// ---------------------------------------------------------------------------------------------------------------------
+// REQUIREMENTS
+// ---------------------------------------------------------------------------------------------------------------------
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { readdirSync } = require('fs');
@@ -23,7 +26,9 @@ for (const file of commandFiles) {
 console.log('Comandos para registrar:', commands);
 
 const rest = new REST({ version: '9' }).setToken(process.env.TOKEN);
-
+// ---------------------------------------------------------------------------------------------------------------------
+// COMMANDS SLASH
+// ---------------------------------------------------------------------------------------------------------------------
 (async () => {
   try {
     console.log('Iniciando registro dos comandos slash...');
