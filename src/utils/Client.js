@@ -1,3 +1,6 @@
+// ---------------------------------------------------------------------------------------------------------------------
+// REQUIREMENTS
+// ---------------------------------------------------------------------------------------------------------------------
 const { Client, Collection } = require('discord.js');
 const { readdirSync } = require('fs');
 const path = require('path');
@@ -13,10 +16,8 @@ class CustomClient extends Client {
 
   async init() {
     try {
-      // Carregar comandos
       const commandPath = path.join(__dirname, '../commands');
       
-      // Verifica se a pasta commands existe
       if (readdirSync(commandPath)) {
         const commandFiles = readdirSync(commandPath).filter(file => file.endsWith('.js'));
         
@@ -25,8 +26,9 @@ class CustomClient extends Client {
           this.commands.set(command.name, command);
         }
       }
-
-      // Carregar eventos
+// ---------------------------------------------------------------------------------------------------------------------
+// EVENTS
+// ---------------------------------------------------------------------------------------------------------------------
       const eventPath = path.join(__dirname, '../events');
       const eventFiles = readdirSync(eventPath).filter(file => file.endsWith('.js'));
       
@@ -40,8 +42,9 @@ class CustomClient extends Client {
           this.on(eventName, (...args) => event.execute(...args));
         }
       }
-
-      // Login
+// ---------------------------------------------------------------------------------------------------------------------
+// LOGIN
+// ---------------------------------------------------------------------------------------------------------------------
       await this.login(process.env.TOKEN);
       console.log('🤖 Sistema da Code Lab iniciado com sucesso!');
     } catch (error) {
